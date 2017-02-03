@@ -6,6 +6,10 @@ import java.util.Date;
  * Created by anicn on 2017-01-19.
  */
 
+/**
+ * NormalTweet extends Tweet
+ */
+
 public class NormalTweet extends Tweet {
     public NormalTweet(String message){
         super(message);

@@ -6,6 +6,9 @@ import java.util.Date;
  * Created by anicn on 2017-01-19.
  */
 
+/**
+ * Allows user to input a mood as a string
+ */
 public abstract class Mood {
 
     private Date date;

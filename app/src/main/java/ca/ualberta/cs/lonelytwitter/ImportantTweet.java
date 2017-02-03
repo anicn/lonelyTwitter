@@ -6,6 +6,9 @@ import java.util.Date;
  * Created by anicn on 2017-01-19.
  */
 
+/**
+ * ImportantTweet extends Tweet
+ */
 public class ImportantTweet extends Tweet{
     public ImportantTweet(String message) {
         super(message);
