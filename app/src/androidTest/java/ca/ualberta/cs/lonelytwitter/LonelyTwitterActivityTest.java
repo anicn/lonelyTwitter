@@ -36,7 +36,6 @@ public class LonelyTwitterActivityTest extends ActivityInstrumentationTestCase2<
     public void testTweet() {
         solo.assertCurrentActivity("Wrong Activity!", LonelyTwitterActivity.class);
 
-        solo.clickOnButton("Clear");
         solo.enterText((EditText) solo.getView(R.id.body), "Test Tweet!");
 
         solo.clickOnButton("Save");

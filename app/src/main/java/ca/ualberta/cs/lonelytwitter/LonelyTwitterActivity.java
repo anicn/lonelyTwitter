@@ -35,7 +35,7 @@ public class LonelyTwitterActivity extends Activity {
 	private EditText bodyText;
 	private ListView oldTweetsList;
 
-	private ArrayList<Tweet> tweets = new ArrayList<Tweet>();
+	private ArrayList<Tweet> tweetList;
 	private ArrayAdapter<Tweet> adapter;
 
 	public ListView getOldTweetsList() {
@@ -55,14 +55,24 @@ public class LonelyTwitterActivity extends Activity {
 		Button clearButton = (Button) findViewById(R.id.clear);
 		oldTweetsList = (ListView) findViewById(R.id.oldTweetsList);
 
+		oldTweetsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Intent intent = new Intent(activity, EditTweetActivity.class);
+				Tweet editTweet = (Tweet) oldTweetsList.getAdapter().getItem(position);
+				intent.putExtra("MyTweet", editTweet.getMessage());
+				startActivity(intent);
+			}
+		});
+
+
 		saveButton.setOnClickListener(new View.OnClickListener() {
 
 			public void onClick(View v) {
 				setResult(RESULT_OK);
 				String text = bodyText.getText().toString();
-				Tweet newestTweet = new NormalTweet(text);
+				Tweet tweet = new NormalTweet(text);
 
-				tweets.add(newestTweet);
+				tweetList.add(tweet);
 				adapter.notifyDataSetChanged();
 				saveInFile();
 //				finish();
@@ -74,7 +84,7 @@ public class LonelyTwitterActivity extends Activity {
 
 			public void onClick(View v) {
 				setResult(RESULT_OK);
-				tweets.clear();
+				tweetList.clear();
 				deleteFile("file.sav");
 				adapter.notifyDataSetChanged();
 
@@ -83,12 +93,6 @@ public class LonelyTwitterActivity extends Activity {
 			}
 		});
 
-		oldTweetsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Intent intent = new Intent(activity, EditTweetActivity.class);
-				startActivity(intent);
-			}
-		});
 
 	}
 
@@ -98,7 +102,7 @@ public class LonelyTwitterActivity extends Activity {
 		super.onStart();
 		loadFromFile();
 		adapter = new ArrayAdapter<Tweet>(this,
-				R.layout.list_item, tweets);
+				R.layout.list_item, tweetList);
 		oldTweetsList.setAdapter(adapter);
 	}
 
@@ -110,11 +114,11 @@ public class LonelyTwitterActivity extends Activity {
 			Gson gson = new Gson();
 			// Took from https://google-gson.googlecode.com/svn/trunk/gson/docs/javadocs/com/google/gson/Gson.html Jan-21-2016
 			Type listType = new TypeToken<ArrayList<NormalTweet>>() {}.getType();
-			tweets = gson.fromJson(in, listType);
+			tweetList = gson.fromJson(in, listType);
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
-			tweets = new ArrayList<Tweet>();
+			tweetList = new ArrayList<Tweet>();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			throw new RuntimeException();
@@ -129,7 +133,7 @@ public class LonelyTwitterActivity extends Activity {
 
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
 			Gson gson = new Gson();
-			gson.toJson(tweets, out);
+			gson.toJson(tweetList, out);
 			out.flush();
 
 			fos.close();
